@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 
 import { useRef } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import Goal from './components/Goal';
 
 
 
@@ -10,6 +12,7 @@ import axios from 'axios';
     const passRef = useRef();
     const [token, setToken] = useState(""); 
     const url = "http://localhost:8000/api/users/login";
+    const navigate = useNavigate();
     const handleSubmit = (e) =>{
       e.preventDefault();
       console.log(userRef.current.value, passRef.current.value);
@@ -18,12 +21,19 @@ import axios from 'axios';
         email:userRef.current.value,
         password: passRef.current.value
       }
-      axios.post(url, obj).then((res)=> localStorage.setItem("token", res.data.token)).catch((err)=>console.log(err))
+      axios.post(url, obj).then((res)=> {localStorage.setItem("token", res.data.token);
+      if(localStorage.getItem('token')){
+        navigate('/goals');
+
+      }
+    }).catch((err)=>console.log(err))
 
       // navigate to different component or page using navigate function from react router dom (library)
      
     }
-  return (
+  return(
+    
+   
     <div>
        <form action="POST" className='form-control' onSubmit={handleSubmit}>
         <label htmlFor="usernameOrEmail">Username: </label>
@@ -33,7 +43,9 @@ import axios from 'axios';
         <button className='btn btn-primary'>Log In</button>
       </form>
     </div>
+  
   )
+  
 }
 
 export default App
